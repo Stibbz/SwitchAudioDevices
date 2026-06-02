@@ -15,6 +15,7 @@ namespace AudioPilot
     {
         private MainViewModel  _viewModel;
         public  MainViewModel  ViewModel => _viewModel;
+        private AudioService   _audioService;
 
         // ── Hotkey recording state ──────────────────────────────────────────────
         private int            _recordingId;      // 0 = not recording
@@ -28,6 +29,7 @@ namespace AudioPilot
         public MainWindow(AudioService audioService, SettingsService settingsService)
         {
             InitializeComponent();
+            _audioService = audioService;
             _viewModel = new MainViewModel(audioService, settingsService);
             DataContext = _viewModel;
 
@@ -309,6 +311,8 @@ namespace AudioPilot
         private void TestSoundButton_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true; // prevent the click bubbling up to the card button
+            if (((FrameworkElement)sender).DataContext is AudioDevice device)
+                _audioService.UnmuteDevice(device.Id);
             System.Media.SystemSounds.Asterisk.Play();
         }
 

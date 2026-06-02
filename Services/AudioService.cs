@@ -126,6 +126,21 @@ namespace AudioPilot.Services
             catch { }
         }
 
+        public void UnmuteDevice(string deviceId)
+        {
+            try
+            {
+                var ep = _enumerator.GetDevice(deviceId);
+                if (ep == null) return;
+                var vol = ep.AudioEndpointVolume;
+                if (vol.Mute)
+                    vol.Mute = false;
+                if (vol.MasterVolumeLevelScalar < 0.25f)
+                    vol.MasterVolumeLevelScalar = 0.25f;
+            }
+            catch { }
+        }
+
         public async Task<bool> ConnectBluetoothDeviceAsync(ulong bluetoothAddress, string deviceName)
         {
             // Invalidate cache so the next poll after connecting sees fresh BT state.
